@@ -1,0 +1,650 @@
+/* CSS Reset: https://www.joshwcomeau.com/css/custom-css-reset/ */
+*,::after,::before{box-sizing:border-box}*{margin:0}body{line-height:1.5;-webkit-font-smoothing:antialiased}canvas,img,picture,svg,video{display:block;max-width:100%}button,input,select,textarea{font:inherit}h1,h2,h3,h4,h5,h6,p{overflow-wrap:break-word}#__next,#root{isolation:isolate}
+
+
+
+// ==========================================================================
+// Variables
+// ==========================================================================
+
+$primary:           #F26522;
+$primary-hover:     #333333;
+$alt:               #181F85;
+$alt-hover:         #333333;
+$body-color:        #333333;
+$body-font:         'Inter', sans-serif;
+$heading-color:     #000;
+$main-background:   #fff;
+$headings-font:     'Red Hat Display', sans-serif;
+$button-font:       'Red Hat Display', sans-serif;
+
+
+
+// ==========================================================================
+//  Clearfix
+// ==========================================================================
+
+.cf:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+
+
+// ==========================================================================
+//  General
+// ==========================================================================
+
+a {
+    color: $primary;
+    -webkit-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+        color: $primary-hover;
+    }
+}
+
+.wrap {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+body {
+    background-color: $main-background;
+	color: $body-color;
+	font-family: $body-font;
+	font-size: 18px;
+	font-weight: 400;
+	line-height: 1.28;
+    overflow-x: hidden;
+}
+
+hr {
+	border: 0;
+	border-collapse: collapse;
+	border-top: 1px solid #eee;
+	clear: both;
+	margin: 30px 0;
+}
+
+img {
+	height: auto;
+	vertical-align: top;
+}
+
+
+.header-image .site-title > a {
+    background-position: center !important;
+    background-size: contain !important;
+    float: left;
+    min-height: 83px;
+    width: 100%;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.site-inner {
+	clear: both;
+	margin: 0 auto;
+	padding: 60px 30px 0;
+}
+
+
+
+// ==========================================================================
+//  Custom Logo
+// ==========================================================================
+
+.wp-custom-logo .site-title {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    overflow: hidden;
+    position: absolute !important;
+    width: 1px;
+    word-wrap: normal !important;
+}
+
+
+
+// ==========================================================================
+//  Typography
+// ==========================================================================
+
+::-moz-placeholder {
+	color: #333;
+	opacity: 1;
+}
+
+::-webkit-input-placeholder {
+	color: #333;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: $headings-font;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+h1 {
+    background: linear-gradient(87.31deg, #FFFFFF 45.37%, #999999 94.75%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 76px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+}
+
+h2 {
+    font-family: $body-font;
+    font-size: 59px;
+    line-height: 0.8;
+}
+
+h3 {
+	color: $alt;
+	font-size: 15px;
+	letter-spacing: 1.5px;
+	line-height: 0.8;
+}
+
+h4 {
+	font-size: 45px;
+	text-transform: uppercase;
+}
+
+h5 {
+    font-size: 40px;
+    letter-spacing: 1.2px;
+}
+
+h6 {
+    font-size: 16px;
+}
+
+li {
+    list-style-type: none;
+}
+
+p {
+    margin-bottom: 30px;
+}
+
+
+
+// ==========================================================================
+//  Forms
+// ==========================================================================
+
+button,
+input[type="button"],
+input[type="submit"],
+.button {
+    background: $primary;
+    border-radius: 42px;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+	font-family: $button-font;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+	padding: 10px;
+	text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+	transition: all 0.2s ease-in-out;
+    width: auto;
+
+    &:hover,
+    &:focus {
+        background: $primary-hover;
+        color: #fff;
+    }
+}
+
+input,
+select,
+textarea {
+	background-color: #fff;
+	border: 1px solid #000;
+	border-radius: 10px;
+	color: #000;
+	font-size: 15px;
+	font-weight: 700;
+	letter-spacing: 1.5px;
+	padding: 10px 35px 10px 15px;
+    text-transform: uppercase;
+	width: 100%;
+
+    &:focus {
+        border: 1px solid #999;
+        outline: none;
+    }
+}
+
+.input-search-icon {
+	color: $primary;
+	font-size: 16px;
+	position: absolute;
+	right: 22px;
+	top: 24px;
+}
+
+
+
+// ==========================================================================
+//  Header
+// ==========================================================================
+
+.site-header {
+    line-height: 1;
+    position: fixed;
+	width: 100%;
+	z-index: 9999;
+
+    &.sticky {
+        background: #000;
+
+        .wrap {
+            padding: 10px;
+        }
+
+        img {
+            width: 150px;
+        }
+    }
+
+    .wrap {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        max-width: 1500px;
+        padding: 40px 40px 0 40px;
+    }
+
+    a {
+        color: #fff;
+        display: block;
+        font-family: $button-font;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-decoration: none;
+	    text-transform: uppercase;
+
+        &:focus,
+        &:hover {
+            color: #F5DD18;
+        }
+    }
+
+    i {
+        margin-right: 3px;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .genesis-nav-menu {
+        display: flex;
+        gap: 44px;
+
+        li {
+            align-items: center;
+            display: flex;
+            position: relative;
+        }
+
+        li:nth-last-child(2) a {
+            background-color: $primary;
+            border-radius: 19px;
+            color: #000;
+            padding-left: 12px;
+            padding-right: 12px;
+
+            &:hover {
+                color: #fff;
+            }
+        }
+    }
+
+    .sub-menu {
+        display: none;
+    }
+}
+
+.title-area {
+	float: left;
+    max-width: 350px;
+
+    .site-description,
+    .site-title {
+        border: 0;
+        clip: rect(0, 0, 0, 0);
+        height: 1px;
+        overflow: hidden;
+        position: absolute !important;
+        width: 1px;
+        word-wrap: normal !important;
+    }
+}
+
+
+
+
+// ==========================================================================
+//  After Header
+// ==========================================================================
+.after-header {
+    background-color: #000;
+	background-position: center 25%;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-size: clamp(100px, 1920px, 100%) auto;
+	color: #fff;
+
+    &::after {
+        content: '';
+        position: absolute;
+        height: 150px;
+        width: 100%;
+        top: 0;
+        background: rgb(255,255,255);
+        background: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.25253851540616246) 100%);
+    }
+
+    .wrap {
+        align-items: flex-start;
+        display: flex;
+        flex-direction: column;
+        height: 700px;
+        justify-content: center;
+        max-width: 740px;
+        padding-top: 110px;	
+    }
+
+    .tagline {
+        font-size: 24px;
+    }
+}
+
+
+
+// ==========================================================================
+//  WordPress Classes
+// ==========================================================================
+
+.aligncenter {
+	text-align: center;
+}
+
+a.aligncenter img {
+	display: block;
+	margin: 0 auto;
+}
+
+a.alignnone {
+	display: inline-block;
+}
+
+.alignleft {
+	float: left;
+	text-align: left;
+}
+
+.alignright {
+	float: right;
+	text-align: right;
+}
+
+a.alignleft,
+a.alignnone,
+a.alignright {
+	max-width: 100%;
+}
+
+img.centered,
+.aligncenter {
+	display: block;
+	margin: 0 auto 30px;
+}
+
+img.alignnone,
+.alignnone {
+	margin-bottom: 15px;
+}
+
+a.alignleft,
+img.alignleft,
+.wp-caption.alignleft {
+	margin: 0 20px 20px 0;
+}
+
+a.alignright,
+img.alignright,
+.wp-caption.alignright {
+	margin: 0 0 20px 20px;
+}
+
+.gallery-caption,
+.wp-caption-text {
+	font-size: 14px;
+	font-size: 1.4rem;
+	font-weight: 600;
+	margin: 0;
+	text-align: center;
+}
+
+.entry-content p.wp-caption-text {
+	margin-bottom: 0;
+}
+
+.entry-content .wp-audio-shortcode,
+.entry-content .wp-playlist,
+.entry-content .wp-video {
+	margin: 0 0 30px;
+}
+
+
+
+// ==========================================================================
+//  Widgets
+// ==========================================================================
+
+.widget {
+	margin-bottom: 40px;
+
+    li {
+        margin-bottom: 10px;
+    }
+
+    p:last-child,
+    li:last-child {
+        margin-bottom: 0;
+    }
+}
+
+
+
+// ==========================================================================
+//  Home
+// ==========================================================================
+body.home {
+
+    // After Header
+    .after-header {
+        background-position: center;
+        background-repeat: no-repeat;
+
+        &::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-bottom: 72px solid #fff;
+            border-left: 100vw solid transparent;
+            margin-top: -72px;
+            max-width: 100%;
+        }
+
+        .wrap {
+            display: block;
+            height: 850px;
+            max-width: 850px;
+            padding-top: 350px;
+            text-align: center;
+        }
+
+        .text {
+            font-size: 26px;
+            line-height: 1.5;
+            margin-bottom: 48px;
+            padding: 0 80px;
+        }
+
+        .button {
+            padding: 15px 32px;
+        }
+    }
+
+
+
+    // About Section
+    .about-section {
+        background-color: #fff;
+        background-image: url('../img/home-about-bg.png');
+        background-position: center;
+        background-repeat: no-repeat;
+        font-size: 25px;
+        letter-spacing: 1px;
+	    line-height: 2;
+        padding: 140px 0 140px 0;
+        text-align: center;
+    }
+
+
+
+    // Categories Section
+    .categories-section {
+        background-color: #000;
+        color: $primary;
+        font-family: $headings-font;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 1.75px;
+        line-height: 43px;
+        padding: 55px 0 110px 0;
+        position: relative;
+        text-align: center;
+        text-transform: uppercase;
+
+        &::after {
+            bottom: 0;
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-bottom: 72px solid $alt;
+            border-left: 100vw solid transparent;
+            margin-top: -72px;
+            max-width: 100%;
+            position: absolute;
+        }
+
+        a {
+            color: #fff;
+	        text-decoration: none;
+
+            &:hover {
+                color: $primary;
+            }
+        }
+
+        .button-block {
+            margin-top: 24px;
+        }
+
+        .button {
+            border-color: #fff;
+            padding: 4px 26px;
+
+            &:hover {
+                color: #fff;
+            }
+        }
+    }
+
+
+
+    // Blue Section
+    .blue-section {
+        background: $alt;
+        color: #fff;
+        position: relative;
+
+        &::after {
+            bottom: 0;
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-bottom: 105px solid #fff;
+            border-left: 100vw solid transparent;
+            margin-top: -105px;
+            max-width: 100%;
+            position: absolute;
+        }
+
+        .wrap {
+            display: flex;
+            padding-top: 20px;
+            padding-bottom: 320px;
+        }
+
+        .left {
+            flex: 1;
+            padding-right: 47px;
+
+            .text {
+                font-size: 40px;
+                font-weight: 700;
+                line-height: 1.075;
+                padding-top: 58px;
+            }
+        }
+
+        .right {
+            flex: 1;
+            padding-left: 47px;
+
+            .text {
+                color: #cbcbcb;
+                font-size: 20px;
+                line-height: 1.4;
+                padding-top: 100px;
+                padding-left: 20px;
+            }
+        }
+
+    }
+
+}
