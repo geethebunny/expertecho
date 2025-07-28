@@ -39,9 +39,9 @@ p {
     isolation: isolate;
 }
 
-// ==========================================================================
-// Variables
-// ==========================================================================
+// ! ==========================================================================
+// ! Variables
+// ! ==========================================================================
 
 $primary: #f26522;
 $primary-hover: #333333;
@@ -54,9 +54,9 @@ $main-background: #fff;
 $headings-font: "Red Hat Display", sans-serif;
 $button-font: "Red Hat Display", sans-serif;
 
-// ==========================================================================
-//  Clearfix
-// ==========================================================================
+// ! ==========================================================================
+// ! Clearfix
+// ! ==========================================================================
 
 .cf:after {
     content: "";
@@ -64,9 +64,9 @@ $button-font: "Red Hat Display", sans-serif;
     clear: both;
 }
 
-// ==========================================================================
-//  General
-// ==========================================================================
+// ! ==========================================================================
+// ! General
+// ! ==========================================================================
 
 a {
     color: $primary;
@@ -122,9 +122,9 @@ img {
     margin: 0 auto;
 }
 
-// ==========================================================================
-//  Custom Logo
-// ==========================================================================
+// ! ==========================================================================
+// ! Custom Logo
+// ! ==========================================================================
 
 .wp-custom-logo .site-title {
     border: 0;
@@ -136,9 +136,9 @@ img {
     word-wrap: normal !important;
 }
 
-// ==========================================================================
-//  Typography
-// ==========================================================================
+// ! ==========================================================================
+// ! Typography
+// ! ==========================================================================
 
 ::-moz-placeholder {
     color: #333;
@@ -173,9 +173,9 @@ h1 {
 }
 
 h2 {
-    font-family: $body-font;
+    color: $primary;
     font-size: 59px;
-    line-height: 0.8;
+    text-transform: uppercase;
 }
 
 h3 {
@@ -207,9 +207,9 @@ p {
     margin-bottom: 30px;
 }
 
-// ==========================================================================
-//  Forms
-// ==========================================================================
+// ! ==========================================================================
+// ! Forms
+// ! ==========================================================================
 
 button,
 input[type="button"],
@@ -258,14 +258,41 @@ textarea {
     }
 }
 
-// ==========================================================================
-//  Header
-// ==========================================================================
+input[type="checkbox"] {
+    appearance: none;
+    background: none;
+    border: 1px solid #fff;
+    border-radius: 0;
+    cursor: pointer;
+    display: grid;
+    height: 30px;
+    padding: 10px;
+    place-content: center;
+    width: 30px;
+
+    &::before {
+        box-shadow: inset 22px 22px #f26522;
+        content: "";
+        height: 22px;
+        transform: scale(0);
+        transition: 120ms transform ease-in-out;
+        width: 22px;
+    }
+
+    &:checked::before {
+        transform: scale(1);
+    }
+}
+
+// ! ==========================================================================
+// ! Header
+// ! ==========================================================================
 
 .site-header {
     line-height: 1;
     padding-top: 40px;
     position: fixed;
+    transition: all 0.3s ease;
     width: 100%;
     z-index: 9999;
 
@@ -372,9 +399,9 @@ textarea {
     }
 }
 
-// ==========================================================================
-//  Header Search
-// ==========================================================================
+// ! ==========================================================================
+// ! Header Search
+// ! ==========================================================================
 .header-search {
     background: #fff;
     border: 1px solid #000;
@@ -418,16 +445,16 @@ textarea {
     }
 }
 
-// ==========================================================================
-//  After Header
-// ==========================================================================
+// ! ==========================================================================
+// ! After Header
+// ! ==========================================================================
 
 .after-header {
     background-color: #000;
     background-position: center 25%;
     background-repeat: no-repeat;
-    background-size: contain;
     background-size: clamp(100px, 1920px, 100%) auto;
+    background-size: cover;
     color: #fff;
 
     &::after {
@@ -437,11 +464,7 @@ textarea {
         width: 100%;
         top: 0;
         background: rgb(255, 255, 255);
-        background: linear-gradient(
-            0deg,
-            rgba(255, 255, 255, 0) 0%,
-            rgba(0, 0, 0, 0.25253851540616246) 100%
-        );
+        background: linear-gradient(0deg, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.25253851540616246) 100%);
     }
 
     .wrap {
@@ -457,21 +480,79 @@ textarea {
     .tagline {
         font-size: 24px;
     }
+
+    // * after-header--home
+    &--home {
+        background-position: center;
+        background-repeat: no-repeat;
+
+        &::after {
+            content: "";
+            display: block;
+            width: 0;
+            height: 0;
+            border-bottom: 72px solid #fff;
+            border-left: 100vw solid transparent;
+            margin-top: -72px;
+            max-width: 100%;
+        }
+
+        .wrap {
+            display: block;
+            height: 900px;
+            max-width: 850px;
+            padding-top: 350px;
+            text-align: center;
+        }
+
+        .text {
+            font-size: 26px;
+            line-height: 1.5;
+            margin-bottom: 48px;
+            padding: 0 80px;
+        }
+
+        .button {
+            padding: 15px 32px;
+        }
+    }
+
+    // * after-header--experts
+    &--experts {
+        background-color: #000;
+        border-color: #fff;
+        color: #fff;
+
+        .main-search-row {
+            position: relative;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        #main-search {
+            padding-right: 54px;
+        }
+
+        .icon {
+            top: 8px;
+        }
+    }
 }
 
-// ==========================================================================
-//  Before Footer
-// ==========================================================================
+// ! ==========================================================================
+// ! Before Footer
+// ! ==========================================================================
 
 .footer-cta {
     background-color: $alt;
     color: #fff;
-    padding-bottom: 30px;
+    padding: 50px 0;
     text-align: center;
 
     .cols {
         display: flex;
         gap: 20px;
+        justify-content: center;
     }
 
     input {
@@ -479,16 +560,13 @@ textarea {
     }
 
     input[type="submit"] {
-        margin: 20px auto 0 auto;
-        max-width: 260px;
-        padding: 10px 26px;
-        width: 100%;
+        padding: 9px 26px;
     }
 }
 
-// ==========================================================================
-//  Footer
-// ==========================================================================
+// ! ==========================================================================
+// ! Footer
+// ! ==========================================================================
 
 .site-footer {
     background-color: #000;
@@ -502,8 +580,7 @@ textarea {
     &::before {
         content: "";
         display: block;
-        filter: brightness(0%) invert(0%) sepia(8%) saturate(657%)
-            hue-rotate(333deg) brightness(80%) contrast(85%);
+        filter: brightness(0%) invert(0%) sepia(8%) saturate(657%) hue-rotate(333deg) brightness(80%) contrast(85%);
         position: absolute;
         top: 0;
         left: 0;
@@ -573,9 +650,9 @@ textarea {
     }
 }
 
-// ==========================================================================
-//  WordPress Classes
-// ==========================================================================
+// ! ==========================================================================
+// ! WordPress Classes
+// ! ==========================================================================
 
 .aligncenter {
     text-align: center;
@@ -648,9 +725,9 @@ img.alignright,
     margin: 0 0 30px;
 }
 
-// ==========================================================================
-//  Widgets
-// ==========================================================================
+// ! ==========================================================================
+// ! Widgets
+// ! ==========================================================================
 
 .widget {
     margin-bottom: 40px;
@@ -665,9 +742,9 @@ img.alignright,
     }
 }
 
-// ==========================================================================
-//  Icons
-// ==========================================================================
+// ! ==========================================================================
+// ! Icons
+// ! ==========================================================================
 
 @keyframes spin {
     to {
@@ -688,47 +765,11 @@ img.alignright,
     top: 20px;
 }
 
-// ==========================================================================
-//  Home
-// ==========================================================================
+// ! ==========================================================================
+// ! Home
+// ! ==========================================================================
 
 body.home {
-    // After Header
-    .after-header {
-        background-position: center;
-        background-repeat: no-repeat;
-
-        &::after {
-            content: "";
-            display: block;
-            width: 0;
-            height: 0;
-            border-bottom: 72px solid #fff;
-            border-left: 100vw solid transparent;
-            margin-top: -72px;
-            max-width: 100%;
-        }
-
-        .wrap {
-            display: block;
-            height: 850px;
-            max-width: 850px;
-            padding-top: 350px;
-            text-align: center;
-        }
-
-        .text {
-            font-size: 26px;
-            line-height: 1.5;
-            margin-bottom: 48px;
-            padding: 0 80px;
-        }
-
-        .button {
-            padding: 15px 32px;
-        }
-    }
-
     // About Section
     .about-section {
         background-color: #fff;
@@ -847,8 +888,8 @@ body.home {
 
         a {
             align-items: center;
-            background-position: center !important;
-            background-size: 105% !important;
+            background-position: center;
+            background-size: cover;
             color: #fff;
             display: flex;
             font-family: "Inter";
@@ -864,7 +905,7 @@ body.home {
             width: 260px;
 
             &:hover {
-                background-size: 150% !important;
+                background-position: right;
             }
         }
     }
@@ -895,40 +936,136 @@ body.home {
     }
 }
 
-// ==========================================================================
-//  Experts
-// ==========================================================================
+// ! ==========================================================================
+// ! About Us
+// ! ==========================================================================
+
+body.page-template-template-about {
+    .text {
+        line-height: 1.5;
+    }
+
+    // Mission Section
+    .mission-section {
+        margin: 60px 0;
+
+        .cols {
+            align-items: center;
+            display: flex;
+            gap: 60px;
+
+            .col {
+                flex: 1;
+            }
+        }
+    }
+
+    // What We Do Section
+    .what-we-do-section {
+        margin-bottom: 60px;
+
+        .cols {
+            align-items: center;
+            display: flex;
+            gap: 60px;
+
+            .col {
+                flex: 1;
+            }
+        }
+    }
+
+    // CTA Section
+    .cta-section {
+        background: $alt;
+        color: #fff;
+        padding: 50px 0;
+        text-align: center;
+
+        h2 {
+            color: #fff;
+        }
+
+        .text {
+            margin-bottom: 30px;
+        }
+
+        .button {
+            padding: 16px 50px;
+        }
+    }
+
+    // Who We Are Section
+    .who-we-are-section {
+        margin: 60px 0;
+        text-align: center;
+
+        img {
+            display: inline-block;
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+    }
+}
+
+// ! ==========================================================================
+// ! Experts
+// ! ==========================================================================
 
 body.page-template-template-experts {
-    // After Header
-    .after-header {
-        background: #000;
-        border-color: #fff;
-        color: #fff;
-
-        .main-search-row {
-            position: relative;
-            max-width: 500px;
-            width: 100%;
-        }
-
-        #main-search {
-            padding-right: 54px;
-        }
-
-        .icon {
-            top: 8px;
-        }
-    }
-
     // Search
-    .empty-results {
-        font-size: 32px;
-        font-weight: 700;
-    }
+    .search-page-content {
+        display: flex;
 
-    .spinner {
-        font-size: 32px;
+        .col--left {
+            background-color: $alt;
+            color: #fff;
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            padding: 60px 0;
+            width: 25%;
+
+            .heading {
+                color: $primary;
+                font-size: 18px;
+                font-weight: 700;
+                letter-spacing: 1.8px;
+                margin-top: 22px;
+                margin-bottom: 5px;
+                padding: 0 80px;
+                text-transform: uppercase;
+            }
+
+            .filter-row {
+                align-items: center;
+                display: flex;
+                gap: 10px;
+                margin-bottom: 14px;
+                padding: 0 80px;
+            }
+        }
+
+        .col--right {
+            padding: 30px;
+            width: 75%;
+        }
+
+        .main-results {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .empty-results {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .spinner {
+            font-size: 32px;
+        }
     }
 
     // Experts
@@ -968,6 +1105,26 @@ body.page-template-template-experts {
             }
         }
 
+        .add-button {
+            background: $alt;
+            color: #fff;
+            font-size: 32px;
+            padding: 10px 20px;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: 0.3s ease-out;
+            z-index: 3;
+
+            &.active {
+                background: $primary;
+            }
+
+            &:hover {
+                background: #222;
+            }
+        }
+
         .search-expert-content {
             margin-top: auto;
             position: relative;
@@ -990,9 +1147,53 @@ body.page-template-template-experts {
     }
 }
 
-// ==========================================================================
-//  Shortlist
-// ==========================================================================
+// ! ==========================================================================
+// ! Toast
+// ! ==========================================================================
+
+.toast-container {
+    align-items: flex-end;
+    bottom: 130px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: flex-end;
+    position: fixed;
+    right: 40px;
+    width: 1000px;
+    z-index: 9999;
+
+    .toast {
+        background: #222;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 16px;
+        padding: 12px 16px;
+        pointer-events: none;
+        position: absolute;
+        transform: translateY(var(--shift-y, 0));
+        transition: transform 0.6s ease, opacity 0.6s ease-out;
+    }
+}
+
+// ! ==========================================================================
+// ! Shortlist
+// ! ==========================================================================
+
+@keyframes shortlist-pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(242, 101, 34, 0.5);
+    }
+    70% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 10px rgba(242, 101, 34, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(242, 101, 34, 0);
+    }
+}
 
 .shortlist {
     background: $primary;
@@ -1008,11 +1209,18 @@ body.page-template-template-experts {
     z-index: 100;
 
     a {
+        align-items: center;
         color: #fff;
+        display: flex;
+        flex-direction: column;
         padding: 8px 24px;
     }
 
     &:hover {
         background: #222;
+    }
+
+    &.pulse {
+        animation: shortlist-pulse 0.4s ease;
     }
 }

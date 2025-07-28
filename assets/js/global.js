@@ -1,21 +1,38 @@
 jQuery(function ($) {
     $(document).ready(function () {
-        // Lucide
+        // * Create Lucide icons
         lucide.createIcons();
 
-        // Sticky header
-        if ($(window).scrollTop() >= 1) $(".site-header").addClass("sticky");
-
-        $(window).scroll(function () {
-            var scroll = $(window).scrollTop();
-            if (scroll >= 1) $(".site-header").addClass("sticky");
-            else $(".site-header").removeClass("sticky");
+        // * Prevent Form submit
+        $(".form-no-submit").on("submit", function (e) {
+            e.preventDefault();
         });
 
-        // Header Search START
+        // ! ======================================
+        // ! ----------- STICKY HEADER ------------
+        // ! ======================================
+
+        // * Function to update sticky header
+        function updateStickyHeader() {
+            if ($(window).scrollTop() >= 1) $(".site-header").addClass("sticky");
+            else $(".site-header").removeClass("sticky");
+        }
+
+        // * Run on page load
+        updateStickyHeader();
+
+        // * Run on page scroll
+        $(window).on("scroll", updateStickyHeader);
+
+        // ! ======================================
+        // ! ----------- HEADER SEARCH ------------
+        // ! ======================================
+
+        // * Header search timer
         var header_search_timer;
-        $(".header-search-input").on("input", function (e) {
-            if ($(this).val().length >= 3) {
+        $(".header-search-input:visible").on("input", function (e) {
+            const value = $(this).val().trim();
+            if (value.length >= 3) {
                 clearTimeout(header_search_timer);
                 header_search_timer = setTimeout(header_search_finish, 1000);
             } else {
@@ -23,14 +40,14 @@ jQuery(function ($) {
             }
         });
 
+        // * Header search function
         function header_search_finish() {
-            var s_name = "";
-            $(".header-search-input").each(function (i) {
-                s_name = s_name + $(this).val();
-            });
+            const s_name = $(".header-search-input:visible").val().trim();
+            const $headerSearch = $(".header-search");
+
             $.ajax({
                 url: local_scripts.ajaxurl,
-                type: "get",
+                type: "GET",
                 data: {
                     action: "header_search",
                     s_name: s_name,
@@ -38,46 +55,42 @@ jQuery(function ($) {
                 dataType: "json",
                 beforeSend: function () {
                     // Show
-                    $(".header-search").removeClass("hidden");
+                    $headerSearch.removeClass("hidden");
 
                     // Show spinner
-                    $(".header-search .spinner").removeClass("hidden");
+                    $headerSearch.find(".spinner").removeClass("hidden");
 
                     // Clear list
-                    $(".header-search .results").empty();
+                    $headerSearch.find(".results").empty();
 
                     // Hide no results
-                    $(".header-search .empty-results").addClass("hidden");
+                    $headerSearch.find(".empty-results").addClass("hidden");
                 },
                 complete: function () {
                     // Hide spinner
-                    $(".header-search .spinner").addClass("hidden");
+                    $headerSearch.find(".spinner").addClass("hidden");
 
                     // Lucide
                     lucide.createIcons();
                 },
                 success: function (data, status, xhr) {
-                    if (data != "") $(".header-search .results").append(data);
-                    else
-                        $(".header-search .empty-results").removeClass(
-                            "hidden"
-                        );
+                    if (data) $headerSearch.find(".results").append(data);
+                    else $headerSearch.find(".empty-results").removeClass("hidden");
                 },
-                error: function (jqXhr, textStatus, errorMessage) {},
+                error: function (jqXhr, textStatus, errorMessage) {
+                    console.error("Header search error:", errorMessage);
+                },
             });
         }
-        // Header Search END
 
+        // TODO: ENQUIRE
         // Enquire Search START
         var expert_search_predict_timer;
 
         $("#experts-text").on("input", function (e) {
             if ($(this).val().length >= 3) {
                 clearTimeout(expert_search_predict_timer);
-                expert_search_predict_timer = setTimeout(
-                    expert_search_predict_finish,
-                    1000
-                );
+                expert_search_predict_timer = setTimeout(expert_search_predict_finish, 1000);
             } else {
                 $("#enquire-experts-search").addClass("hidden");
             }
@@ -103,9 +116,7 @@ jQuery(function ($) {
                     $("#enquire-experts-prediction").empty();
 
                     // Hide no results
-                    $("#enquire-experts-search .empty-results").addClass(
-                        "hidden"
-                    );
+                    $("#enquire-experts-search .empty-results").addClass("hidden");
                 },
                 complete: function () {
                     // Hide spinner
@@ -115,60 +126,48 @@ jQuery(function ($) {
                     lucide.createIcons();
                 },
                 success: function (data, status, xhr) {
-                    if (data != "")
-                        $("#enquire-experts-prediction").append(data);
-                    else
-                        $("#enquire-experts-search .empty-results").removeClass(
-                            "hidden"
-                        );
+                    if (data != "") $("#enquire-experts-prediction").append(data);
+                    else $("#enquire-experts-search .empty-results").removeClass("hidden");
                 },
                 error: function (jqXhr, textStatus, errorMessage) {},
             });
         }
 
         // Expert Enquiry Click
-        $("#enquire-experts-prediction").on(
-            "click",
-            ".enquire-expert",
-            function () {
-                var id = String($(this).data("expert-id"));
-                var cookie_experts = Cookies.get("experts");
+        $("#enquire-experts-prediction").on("click", ".enquire-expert", function () {
+            var id = String($(this).data("expert-id"));
+            var cookie_experts = Cookies.get("experts");
 
-                // Expert exists
-                if (cookie_experts) {
-                    cookie_experts = cookie_experts.split("|");
+            // Expert exists
+            if (cookie_experts) {
+                cookie_experts = cookie_experts.split("|");
 
-                    // Check if already exists
-                    if (!cookie_experts.includes(id)) cookie_experts.push(id);
-                    else return;
-                } else {
-                    cookie_experts = [id];
-                }
-
-                // Join
-                cookie_experts = cookie_experts.join("|");
-
-                Cookies.set("experts", cookie_experts);
-
-                // Remove input
-                $("#experts-text").val("");
-
-                // Update hidden value
-                if ($("#experts-hiddenlist").val())
-                    $("#experts-hiddenlist").val(
-                        $("#experts-hiddenlist").val() +
-                            "\r\n" +
-                            $(this).data("experts-name")
-                    );
-                else $("#experts-hiddenlist").val($(this).data("expert-name"));
-
-                // Hide search
-                $("#enquire-experts-search").addClass("hidden");
-
-                // Append
-                $("#enquire-experts-list").append($(this));
+                // Check if already exists
+                if (!cookie_experts.includes(id)) cookie_experts.push(id);
+                else return;
+            } else {
+                cookie_experts = [id];
             }
-        );
+
+            // Join
+            cookie_experts = cookie_experts.join("|");
+
+            Cookies.set("experts", cookie_experts);
+
+            // Remove input
+            $("#experts-text").val("");
+
+            // Update hidden value
+            if ($("#experts-hiddenlist").val())
+                $("#experts-hiddenlist").val($("#experts-hiddenlist").val() + "\r\n" + $(this).data("experts-name"));
+            else $("#experts-hiddenlist").val($(this).data("expert-name"));
+
+            // Hide search
+            $("#enquire-experts-search").addClass("hidden");
+
+            // Append
+            $("#enquire-experts-list").append($(this));
+        });
 
         // Expert Enquiry Remove
         $("#enquire-experts-list").on("click", "i", function () {
@@ -181,11 +180,7 @@ jQuery(function ($) {
             // Check if not last element
             if (experts_hidden_list.includes(", ")) {
                 // Update hidden value
-                $("#experts-hiddenlist").val(
-                    experts_hidden_list
-                        .replace(name + ", ", "")
-                        .replace(", " + name, "")
-                );
+                $("#experts-hiddenlist").val(experts_hidden_list.replace(name + ", ", "").replace(", " + name, ""));
 
                 // Update cookies
                 cookie_experts = cookie_experts.filter(function (e) {
@@ -208,68 +203,49 @@ jQuery(function ($) {
         // Page - Expert Enquiry
         if ($("body").hasClass("page-template-template_enquiries")) {
             // Load experts
-            $("#enquire-experts-list").append(
-                $("#cookie-experts .enquire-expert")
-            );
+            $("#enquire-experts-list").append($("#cookie-experts .enquire-expert"));
 
             // Set form value
-            $("#experts-hiddenlist").val(
-                $("#cookie-experts-form-input").data("value")
-            );
+            $("#experts-hiddenlist").val($("#cookie-experts-form-input").data("value"));
         }
 
-        // Prevent Form submit
-        $(".form-no-submit").on("submit", function (e) {
-            e.preventDefault();
-        });
+        // ! ======================================
+        // ! ----------- EXPERTS SEARCH -----------
+        // ! ======================================
 
-        var main_search_timer;
-        var current_page = 1;
+        let main_search_timer;
+        let current_page = 1;
+        let is_pagination = false;
 
-        $("#main-search").on("input", function (e) {
-            var val = $(this).val();
-
+        // * Function to trigger Main Search
+        function triggerMainSearch(time = 1000) {
             clearTimeout(main_search_timer);
-            main_search_timer = setTimeout(main_search_timer_finish, 1000);
-        });
+            main_search_timer = setTimeout(main_search_timer_finish, time);
+        }
 
-        // Change Category
-        $(".experts-filter-row input[type=checkbox]").on(
-            "change",
-            function (e) {
-                var child = $(this).parent().next(".filter-row-child");
+        // * Trigger on input change
+        $("#main-search").on("input", () => triggerMainSearch(1000));
 
-                // If parent and closed, deselect all child
-                if (child) {
-                    if ($(this).prop("checked")) {
-                        child.removeClass("hidden");
-                    } else {
-                        child
-                            .find("input[type=checkbox]")
-                            .prop("checked", false);
-                        child.addClass("hidden");
-                    }
-                }
+        // * Trigger on category change
+        $(".experts-filter-row input[type=checkbox]").on("change", () => triggerMainSearch(1000));
 
-                clearTimeout(main_search_timer);
-                // main_search_timer = setTimeout( main_search_timer_finish, 1000 );
-            }
-        );
-
-        // Pagination
+        // * Pagination
         $(".experts-pagination").on("click", "a", function (e) {
             e.preventDefault();
 
-            console.log($(this).html());
+            // Set page
+            if ($(this).html() === "&lt;") current_page--;
+            else if ($(this).html() === "&gt;") current_page++;
+            else current_page = parseInt($(this).text().trim());
 
-            // Set Page
-            if ($(this).html() == "&lt;") current_page--;
-            else if ($(this).html() == "&gt;") current_page++;
-            else current_page = $(this).html();
+            // Page limits
+            current_page = Math.max(1, current_page);
 
-            // Query
-            clearTimeout(main_search_timer);
-            main_search_timer = setTimeout(main_search_timer_finish, 0);
+            // Set pagination
+            is_pagination = true;
+
+            // Run search instantly
+            triggerMainSearch(0);
 
             // Scroll
             $([document.documentElement, document.body]).animate(
@@ -280,17 +256,14 @@ jQuery(function ($) {
             );
         });
 
+        // * Main search function
         function main_search_timer_finish() {
             var url = window.location.href.split("?")[0];
-            var t2_boxes = [];
-            var t3_boxes = [];
+            const $searchPageContent = $(".search-page-content");
+            var categories = [];
 
             $('.filter-row input[data-tier="2"]:checked').each(function () {
-                t2_boxes.push($(this).val());
-            });
-
-            $('.filter-row input[data-tier="3"]:checked').each(function () {
-                t3_boxes.push($(this).val());
+                categories.push($(this).val());
             });
 
             $.ajax({
@@ -299,115 +272,58 @@ jQuery(function ($) {
                 data: {
                     action: "main_search_experts",
                     search: $("#main-search").val(),
-                    t2_categories: t2_boxes.join("|"),
-                    t3_categories: t3_boxes.join("|"),
+                    categories: categories.join("|"),
                     page: current_page,
                 },
                 dataType: "json",
                 beforeSend: function () {
                     // Show spinner
-                    $(".search-page-content .spinner").removeClass("hidden");
+                    $searchPageContent.find(".spinner").removeClass("hidden");
 
                     // Clear list
-                    $(".search-page-content .main-results").empty();
+                    $searchPageContent.find(".main-results").empty();
 
                     // Clear Paginatiion
-                    current_page = 1;
-                    $(".search-page-content .pagination").empty();
+                    if (!is_pagination) {
+                        current_page = 1;
+                    }
+                    $searchPageContent.find(".pagination").empty();
 
                     // Hide no results
-                    $(".search-page-content .empty-results").addClass("hidden");
+                    $searchPageContent.find(".empty-results").addClass("hidden");
 
                     // Clear URL
                     window.history.pushState("Experts Search", "Experts", url);
                 },
                 complete: function () {
                     // Hide spinner
-                    $(".search-page-content .spinner").addClass("hidden");
+                    $searchPageContent.find(".spinner").addClass("hidden");
 
                     // Lucide
                     lucide.createIcons();
+
+                    // Reset page
+                    is_pagination = false;
                 },
                 success: function (data, status, xhr) {
-                    if (data != "") {
-                        $(".search-page-content .main-results").append(
-                            data.experts
-                        );
-                        $(".search-page-content .pagination").append(
-                            data.pagination
-                        );
+                    if (data.experts != "") {
+                        $searchPageContent.find(".main-results").append(data.experts);
+                        $searchPageContent.find(".pagination").append(data.pagination);
                     } else {
-                        $(".search-page-content .empty-results").removeClass(
-                            "hidden"
-                        );
+                        $searchPageContent.find(".empty-results").removeClass("hidden");
+                        console.log("EMPTY");
                     }
                 },
-                error: function (jqXhr, textStatus, errorMessage) {},
+                error: function (jqXhr, textStatus, errorMessage) {
+                    console.error("AJAX Error:", textStatus, errorMessage);
+                },
             });
         }
 
-        // Blog Search
-        var blog_search_timer;
+        // ! ======================================
+        // ! --------------- MOBILE ---------------
+        // ! ======================================
 
-        $("#blog-search").on("input", function (e) {
-            clearTimeout(blog_search_timer);
-            blog_search_timer = setTimeout(blog_search_timer_finish, 1000);
-        });
-
-        // Category
-        $(
-            "body.page-template-template-blog .filter-row input[type=checkbox]"
-        ).on("change", function (e) {
-            clearTimeout(blog_search_timer);
-            blog_search_timer = setTimeout(blog_search_timer_finish, 1000);
-        });
-
-        function blog_search_timer_finish() {
-            var category_boxes = [];
-
-            $(".filter-row input[type=checkbox]:checked").each(function () {
-                category_boxes.push($(this).val());
-            });
-
-            $.ajax({
-                url: local_scripts.ajaxurl,
-                type: "get",
-                data: {
-                    action: "blog_search_experts",
-                    search: $("#blog-search").val(),
-                    categories: category_boxes.join("|"),
-                },
-                dataType: "json",
-                beforeSend: function () {
-                    // Show spinner
-                    $(".search-page-content .spinner").removeClass("hidden");
-
-                    // Clear list
-                    $(".search-page-content .main-results").empty();
-
-                    // Hide no results
-                    $(".search-page-content .empty-results").addClass("hidden");
-                },
-                complete: function () {
-                    // Hide spinner
-                    $(".search-page-content .spinner").addClass("hidden");
-
-                    // Lucide
-                    lucide.createIcons();
-                },
-                success: function (data, status, xhr) {
-                    if (data != "")
-                        $(".search-page-content .main-results").append(data);
-                    else
-                        $(".search-page-content .empty-results").removeClass(
-                            "hidden"
-                        );
-                },
-                error: function (jqXhr, textStatus, errorMessage) {},
-            });
-        }
-
-        // Toggle Filters
         $(".mobile-toggle").on("click", function (e) {
             if ($(this).hasClass("active")) {
                 $(this).siblings(".left").slideUp();
@@ -417,9 +333,11 @@ jQuery(function ($) {
             $(this).toggleClass("active");
         });
 
-        // Flickity
+        // ! ======================================
+        // ! -------------- FLICKITY --------------
+        // ! ======================================
+
         $(".expert-media-list").flickity({
-            // options
             contain: true,
             pageDots: false,
             adaptiiveHeight: true,
@@ -427,60 +345,116 @@ jQuery(function ($) {
             watchCSS: true,
         });
 
-        // Shortlist Add
+        // ! ======================================
+        // ! -------------- SHORTLIST -------------
+        // ! ======================================
+
+        // * Function to change shortlist count
+        function updateShortlistCount(delta) {
+            const $shortlist = $(".shortlist");
+            const $count = $(".shortlist-count");
+
+            // Remove animation
+            $shortlist.removeClass("pulse");
+
+            // Force restart animation
+            void $shortlist[0].offsetWidth;
+
+            // Add animation
+            $shortlist.addClass("pulse");
+
+            // Remove the class after animation ends so it can re-trigger
+            $shortlist.one("animationend", () => {
+                $shortlist.removeClass("pulse");
+            });
+
+            $count.text((parseInt($count.text(), 10) || 0) + delta);
+        }
+
+        // * Function to add a toast message
+        function showToast(message) {
+            const $container = $(".toast-container");
+            const $existing_toasts = $container.children(".toast");
+
+            // Animate existing toasts up
+            $existing_toasts.each(function () {
+                const currentY = parseFloat($(this).css("--shift-y") || 0);
+                const newY = currentY - 50; // Adjust depending on your toast height
+                $(this).css("--shift-y", `${newY}px`);
+                $(this).css("transform", `translateY(${newY}px)`);
+            });
+
+            // Create toast
+            const $toast = $(`<div class="toast">${message}</div>`);
+            $toast.css({
+                opacity: 0,
+                transform: "translateY(50px)",
+            });
+            $container.append($toast);
+
+            // Trigger reflow, then animate into place
+            $toast[0].offsetHeight;
+            $toast.css({
+                opacity: 1,
+                transform: "translateY(0px)",
+            });
+
+            // Remove toast after animation ends (3s)
+            setTimeout(() => {
+                $toast.css("opacity", 0);
+                setTimeout(() => $toast.remove(), 600);
+            }, 5000);
+        }
+
+        // * Adds expert to the shortlist
         $(".main-results").on("click", ".add-button", function (e) {
             e.preventDefault();
 
             // Init
-            var id = String($(this).parent().data("expert-id"));
-            var cookie_experts = Cookies.get("experts");
+            const $button = $(this);
+            const id = String($(this).parent().data("expert-id"));
+            const is_adding = $button.find(".icon--x").hasClass("hidden");
 
-            if (cookie_experts) cookie_experts = cookie_experts.split("|");
+            // Cookie
+            let cookie_experts = Cookies.get("experts");
+            let expert_list = cookie_experts ? cookie_experts.split("|") : [];
 
             // Update cookies
-            if ($(this).children(".fa-times").hasClass("hidden")) {
-                if (Array.isArray(cookie_experts))
-                    cookie_experts = cookie_experts.filter(function (e) {
-                        return e !== id;
-                    });
-                else cookie_experts = [];
+            if (is_adding) {
+                // Add if it doesn't exist
+                if (!expert_list.includes(id)) {
+                    expert_list.push(id);
+                    Cookies.set("experts", expert_list.join("|"));
+                }
 
-                cookie_experts.push(id);
-
-                Cookies.set("experts", cookie_experts.join("|"));
-
-                $(this).find(".icon--plus").addClass("hidden");
-                $(this).find(".icon--x").removeClass("hidden");
-
-                // Update text
-                $(".shortlist-footer .number").html(
-                    parseInt($(".shortlist-footer .number").html()) + 1
-                );
+                // Update UI
+                $button.find(".icon--plus").addClass("hidden");
+                $button.find(".icon--x").removeClass("hidden");
+                $button.addClass("active");
+                updateShortlistCount(1);
             } else {
-                // Check if not last element
-                if (cookie_experts.length > 1) {
-                    // Update cookies
-                    cookie_experts = cookie_experts.filter(function (e) {
-                        return e !== id;
-                    });
+                // Remove expert
+                expert_list = expert_list.filter((e) => e !== id);
 
-                    Cookies.set("experts", cookie_experts.join("|"));
+                // Check if not last element
+                if (expert_list.length > 0) {
+                    Cookies.set("experts", expert_list.join("|"));
                 } else {
-                    // Remove cookies
                     Cookies.remove("experts");
                 }
 
-                $(this).find(".icon--plus").removeClass("hidden");
-                $(this).find(".icon--x").addClass("hidden");
-
-                // Update text
-                $(".shortlist-footer .number").html(
-                    parseInt($(".shortlist-footer .number").html()) - 1
-                );
+                // Update UI
+                $button.find(".icon--plus").removeClass("hidden");
+                $button.find(".icon--x").addClass("hidden");
+                $button.removeClass("active");
+                updateShortlistCount(-1);
             }
+
+            // Show toast
+            showToast(is_adding ? "Expert added to shortlist." : "Expert removed from shortlist.");
         });
 
-        // Shortlist Remove
+        // * Removes expert from the shortlist
         $(".shortlist-list .remove-button").on("click", function (e) {
             e.preventDefault();
 

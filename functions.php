@@ -9,10 +9,10 @@
  * @license      GPL-2.0+
  **/
 
-// Surpress Genesis error
+// * Surpress Genesis error
 add_filter('doing_it_wrong_trigger_error', '__return_false');
 
-// Starts the engine.
+// * Starts the engine.
 require_once get_template_directory() . '/lib/init.php';
 
 
@@ -44,6 +44,11 @@ function child_theme_enqueues()
 	# JSCookie
 	wp_enqueue_script('js-cookie', '//cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js', [], '3.0.1');
 
+	# Superfish and HoverIntent
+	wp_dequeue_script('superfish');
+	wp_dequeue_script('superfish-args');
+	wp_dequeue_script('hoverIntent');
+
 	# Localize variables
 	wp_localize_script('theme-global', 'local_scripts', [
 		'ajaxurl' => admin_url('admin-ajax.php')
@@ -54,10 +59,10 @@ add_action('wp_enqueue_scripts', 'child_theme_enqueues');
 
 
 
-// Webgee Designs
+// * Webgee Designs
 require_once get_stylesheet_directory() . '/wgd/wp-mobile-menu.php';
 
-// Helpers
+// * Helpers
 require_once get_stylesheet_directory() . '/helpers.php';
 
 
@@ -93,7 +98,7 @@ function child_theme_setup()
 	add_theme_support('responsive-embeds');
 	add_theme_support('align-wide');
 }
-add_action('genesis_setup', 'child_theme_setup', 15);
+add_action('after_setup_theme', 'child_theme_setup', 15);
 
 
 
@@ -143,12 +148,16 @@ function child_theme_sidebars()
 {
 	genesis_register_sidebar([
 		'id' 	=> 'footer-left',
-		'name' => 'Footer - Left'
+		'name' => 'Footer - Left',
+		'before_title'  => '<h4 class="widget-title">',
+		'after_title'   => '</h4>',
 	]);
 
 	genesis_register_sidebar([
 		'id' 	=> 'footer-right',
-		'name' => 'Footer - Right'
+		'name' => 'Footer - Right',
+		'before_title'  => '<h4 class="widget-title">',
+		'after_title'   => '</h4>',
 	]);
 }
 add_action('widgets_init', 'child_theme_sidebars');
@@ -179,14 +188,15 @@ function child_theme_footer()
 {
 	$experts = (isset($_COOKIE['experts'])) ? explode('|', $_COOKIE['experts']) : [];
 ?>
+	<div class='toast-container'></div>
 	<div class='shortlist'>
 		<a href='<?php echo get_permalink(1883); ?>'>
 			<i data-lucide='mic-vocal' class='icon'></i>
-			<?php echo count(array_filter($experts)); ?>
+			<span class='shortlist-count'><?php echo count(array_filter($experts)); ?></span>
 		</a>
 	</div>
 	<section class='footer-cta'>
-		<div class='wrap wrap--narrow'>
+		<div class='wrap'>
 			<h4>Stay in the Loop</h4>
 			<p>Get updates and news from Expert Echo</p>
 			<form onsubmit='return false;'>
@@ -194,11 +204,13 @@ function child_theme_footer()
 					<div class='col col--left'>
 						<input type='email' name='ne' placeholder='you@example.com'>
 					</div>
-					<div class='col col--right'>
+					<div class='col col--middle'>
 						<input type='text' name='nn' placeholder='Jane Doe'>
 					</div>
+					<div class='col col--right'>
+						<input type='submit' value='Join Now' class='button'>
+					</div>
 				</div>
-				<input type='submit' value='Join Now' class='button'>
 			</form>
 		</div>
 	</section>
@@ -223,7 +235,7 @@ function child_theme_footer()
 
 
 
-/* Shortcodes */
+# Shortcodes
 add_filter('wp_nav_menu_items', 'do_shortcode');
 add_shortcode('expert-search', 'expert_search_shortcode');
 function expert_search_shortcode()
@@ -248,15 +260,19 @@ function expert_search_shortcode()
 }
 
 
-/* After Header */
+# After Header
 add_action('genesis_after_header', 'theme_after_header');
 function theme_after_header()
 {
 	$page_header_banner = get_field('page_header_banner');
+	$page_header_subheading = get_field('page_header_subheading');
 ?>
 	<div class='after-header' style='background-image: url(<?php echo $page_header_banner; ?>);'>
 		<div class='wrap'>
 			<h1><?php the_title(); ?></h1>
+			<?php if ($page_header_subheading) : ?>
+				<div class='tagline'><?php echo $page_header_subheading; ?></div>
+			<?php endif; ?>
 		</div>
 	</div>
 	<?php
@@ -413,8 +429,8 @@ function ajax_main_search_experts()
 		'paged'				=> $page
 	];
 
-	if ($_GET['expert_categories']) {
-		$categories = explode('|', $_GET['expert_categories']);
+	if ($_GET['categories']) {
+		$categories = explode('|', $_GET['categories']);
 		$args['tax_query']['relation'] = 'OR';
 
 		foreach ($categories as $category) {
@@ -435,7 +451,7 @@ function ajax_main_search_experts()
 
 	?>
 		<a href='<?php the_permalink(); ?>' class='search-expert' style='background-image: linear-gradient(black, black)<?php if ($image) : ?>,url(<?php echo $image; ?>)<?php endif; ?>;' data-expert-id='<?php echo get_the_ID(); ?>'>
-			<div class='add-button' data-url='<?php echo get_permalink(1883); ?>'>
+			<div class='add-button <?php if (in_array(get_the_ID(), $shortlist_experts)) echo 'active'; ?>' data-url='<?php echo get_permalink(1883); ?>'>
 				<i data-lucide='plus' class='icon icon--plus <?php if (in_array(get_the_ID(), $shortlist_experts)) echo 'hidden'; ?>'></i>
 				<i data-lucide='x' class='icon icon--x <?php if (!in_array(get_the_ID(), $shortlist_experts)) echo 'hidden'; ?>'></i>
 			</div>

@@ -8,7 +8,7 @@ function page_after_header()
 {
 ?>
 	<?php $hero = get_field('hero_area'); ?>
-	<section class='after-header' style='background-image:url(<?php echo $hero['background_image']; ?>)'>
+	<section class='after-header after-header--home' style='background-image:url(<?php echo $hero['background_image']; ?>)'>
 		<div class='wrap'>
 			<h1><?php echo $hero['heading']; ?></h1>
 			<div class='text'><?php echo $hero['text']; ?></div>

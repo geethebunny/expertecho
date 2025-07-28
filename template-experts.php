@@ -8,7 +8,8 @@ add_action('genesis_after_header', 'page_after_header');
 function page_after_header()
 {
 ?>
-	<section class='after-header'>
+	<?php $page_header_banner = get_field('page_header_banner'); ?>
+	<section class='after-header after-header--experts' style='background-image: url(<?php echo $page_header_banner; ?>);'>
 		<div class='wrap'>
 			<h1>Find an Expert</h1>
 			<div class='main-search-row'>
@@ -22,7 +23,7 @@ function page_after_header()
 	</section>
 
 	<div class='search-page-content'>
-		<div class='left'>
+		<div class='col col--left'>
 			<?php
 			$categories = get_terms([
 				'taxonomy' 		=> 'expert-categories',
@@ -55,7 +56,7 @@ function page_after_header()
 			<i class='fa-solid fa-chevron-down'></i>
 			<i class='fa-solid fa-chevron-up'></i>
 		</div>
-		<div class='right'>
+		<div class='col col--right'>
 			<div class='main-results'>
 				<?php
 				$shortlist_experts = (isset($_COOKIE['experts'])) ? explode('|', $_COOKIE['experts']) : [];
@@ -88,7 +89,7 @@ function page_after_header()
 					<?php $image = get_expert_thumbnail(get_the_ID()); ?>
 
 					<a href='<?php the_permalink(); ?>' class='search-expert' style='background-image: linear-gradient(black, black)<?php if ($image) : ?>,url(<?php echo $image; ?>)<?php endif; ?>;' data-expert-id='<?php the_ID(); ?>'>
-						<div class='add-button' data-url='<?php echo get_permalink(1883); ?>'>
+						<div class='add-button <?php if (in_array(get_the_ID(), $shortlist_experts)) echo 'active'; ?>' data-url='<?php echo get_permalink(1883); ?>'>
 							<i data-lucide='plus' class='icon icon--plus <?php if (in_array(get_the_ID(), $shortlist_experts)) echo 'hidden'; ?>'></i>
 							<i data-lucide='x' class='icon icon--x <?php if (!in_array(get_the_ID(), $shortlist_experts)) echo 'hidden'; ?>'></i>
 						</div>
@@ -104,7 +105,7 @@ function page_after_header()
 				<?php endwhile; ?>
 			</div>
 			<div class='spinner hidden'>
-				<i data-lucide='loader-circle' class='icon icon-spinner'></i>
+				<i data-lucide='loader-circle' class='icon icon--spinner'></i>
 			</div>
 			<div class='empty-results hidden'>
 				No Results.
